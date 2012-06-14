@@ -1,0 +1,11 @@
+<area shape="rect" href="$xmenu__wind_8c.html" title="src/client/x/xmenu_wind.c" alt="" coords="5,80,176,107">
+<area shape="rect" href="$agenda_8c.html" title="src/clipsrules/core/agenda.c" alt="" coords="200,80,384,107">
+<area shape="rect" href="$clips_8h.html" title="src/clipsrules/core/clips.h" alt="" coords="408,80,576,107">
+<area shape="rect" href="$rulebin_8c.html" title="src/clipsrules/core/rulebin.c" alt="" coords="600,80,779,107">
+<area shape="rect" href="$rulebsc_8c.html" title="src/clipsrules/core/rulebsc.c" alt="" coords="803,80,987,107">
+<area shape="rect" href="$ruledef_8c.html" title="src/clipsrules/core/ruledef.c" alt="" coords="1011,80,1192,107">
+<area shape="rect" href="$rulepsr_8c.html" title="src/clipsrules/core/rulepsr.c" alt="" coords="1216,80,1395,107">
+<area shape="rect" href="$xedit_8c.html" title="src/client/x/xedit.c" alt="" coords="141,155,269,181">
+<area shape="rect" href="$cmptblty_8h.html" title="src/clipsrules/core/cmptblty.h" alt="" coords="293,155,485,181">
+<area shape="rect" href="$main_8c.html" title="src/clipsrules/core/main.c" alt="" coords="509,155,680,181">
+<area shape="rect" href="$userfunctions_8c.html" title="src/clipsrules/core/userfunctions.c" alt="" coords="704,155,923,181">

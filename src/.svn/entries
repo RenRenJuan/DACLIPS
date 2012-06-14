@@ -1,0 +1,80 @@
+10
+
+dir
+22
+svn://juan.ai-integration.biz/svn/ai-integration.biz/DACLIPS/trunk/src
+svn://juan.ai-integration.biz/svn/ai-integration.biz
+
+
+
+2011-01-10T21:30:40.601571Z
+22
+jdaugherty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0f11a633-4532-49ad-be29-257e40156bce
+
+include
+dir
+
+clipsmm
+dir
+
+clipsrules
+dir
+
+server
+dir
+
+COOL
+dir
+
+client
+dir
+
+.gdbinit
+file
+
+
+
+
+2011-01-10T21:33:37.000000Z
+94da6d1d5e9bb7777e7a0402dcb819f2
+2011-01-10T21:30:40.601571Z
+22
+jdaugherty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+28
+

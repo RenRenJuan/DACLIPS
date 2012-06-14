@@ -1,0 +1,63 @@
+          
+/** 
+    \class Listener
+
+    Derive your class from a Listener<EvType>, to give it the
+    ability to hear (i.e. receive, listen to) events of type
+    EvType. EvType is a fundamental type (bool, int, float,
+    etc), a struct or a class of your choice. You must define
+    Listener<EvType>::processEvent() in your Listener<EvType>
+    subclass. You call listenForEvents() on your listener
+    instance (at least once) for it to be able to hear (i.e.
+    receive) any EvType event, and you call ignoreEvents() on
+    the instance so it will no longer receive events of type 
+    EvType.
+
+    \note 
+    - Do not assume that the Listeners will receive the generated event in 
+      the same order as they registered. 
+    - A class can listen to more than one type of event by inheriting 
+      from more than one type of listener. Calling listenForEvents()
+      then is done by specifying which listenForEvents() to call, e.g.
+      \code 
+      class YourListener: 
+          public Listener<TicEvent>, public Listener<TacEvent> 
+      {
+          public:
+              YourListener() {
+                  Listener<TicEvent>::listenForEvents();
+                  Listener<TacEvent>::listenForEvents();
+              }
+          protected: 
+              virtual void processEvent(const TicEvent& event) {...}
+              virtual void processEvent(const TacEvent& event) {...}
+      };
+      \endcode
+    - If a subclass of your class must also process an event, remember 
+      that because its processEvent is virtual, it will be the first
+      one called. Therefore it should call its base class method: 
+      \code 
+      struct TicEvent {...}; 
+      class YourListener: public Listener<TicEvent> {...};
+      class DerivedListener: public YourListener
+      {
+          public: 
+              // ...
+          protected:
+              virtual void processEvent(const TicEvent& event) 
+              {
+                  // give parent class a chance to process event
+                  YourListener::processEvent(event);
+                  // do our stuff ...
+              }
+      };
+      \endcode
+    - ignoreThisEvent(): You can call it (from inside
+      processEvent()) to tell EventSender<EvType> that you will be ignoring
+      the event received.  This can be a useful way to signify an error in
+      the data sent by the event generator.  Just keep in mind that the
+      generator of the event may not actually check whether any listener
+      ignored the event (it may not care).
+    
+
+*/

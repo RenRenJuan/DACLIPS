@@ -1,0 +1,188 @@
+// This is the main DLL file.
+
+#define DV_DLL
+#define DV_DLL_MAIN
+#include "md_device.h"
+#include "mdBehavior.h"
+#include "../server/Listener.cpp"
+#include "../server/EventSender.cpp"
+#include <time.h>
+
+ extern boost::mutex                    mdQuery;
+ extern boost::condition_variable mdObsQPending;
+ extern boost::condition_variable mdODEQPending;
+ extern boost::condition_variable mdCmdQPending;
+
+void runEmbedded();
+void runDataLayer();
+void setStrMsg(mdDG &mdg,const char *str,
+               mdDGtype md_DG_type,mdDGtype md_DG_subtype,
+               const char *extraTxt  );
+bool aucDevice() {
+
+  bool value=true; 
+
+  try {
+
+  thisConfig = new deviceDaemonConfig();
+  theseLogs.init("auc-dv");
+  theseLogs.logN(0,DV_NAME " " DV_VERSION " compiled on " __DATE__ " @ " __TIME__); 
+  theseLogs.logN(0,"Embedded processing begun.");    
+
+   boost::thread fg(runEmbedded);
+   boost::thread bg(runDataLayer);
+
+   if ( !bg.joinable() || !fg.joinable() )
+         theseLogs.logN(0,"Failed to start MD thread group.");
+   else {theseLogs.logN(0,"MD thread group started OK.");
+         bgThreadGroup = &fg;
+         dataLayer     = &bg;
+        }         
+  }
+  catch (std::exception &e)
+  {
+      theseLogs.logN(1,"Exception: %s",e.what());      
+  }
+  catch (...) {
+      theseLogs.logN(0,"General fault.");
+  }
+  return value;
+
+}
+void mdEmbeddedAPI::mdCmdResult(int rc) {
+
+ if (rc == OK) {
+
+ } else {
+
+
+ }
+
+
+}
+int mdEmbeddedAPI::mdRegisterCommandCallback(void (f)(char *,char *), const char *canonicalSCPI) {
+
+ boost::unique_lock<boost::mutex> cmdRegResponse(mdQuery);
+ dvQueryMD                                       checkCmd;
+ int value=OK;
+
+ setStrMsg(checkCmd.mdg,canonicalSCPI,MDDG_MDQUERY,MDDG_REGSCPI,thisConfig->deviceName.c_str());
+ checkCmd.mdg.dg.hdr.handle = checkCmd.mdg.dg.hdr.sourceHandle = thisDevice->myHandle;
+ thisCmdQry.call            = &checkCmd;
+ checkCmd.send();
+ mdCmdQPending.wait(cmdRegResponse);
+
+ if (thisCmdQry.response->mdg.dg.hdr.dgType.value) {
+
+   mdCmdPOD              *flattened = (mdCmdPOD *)(&thisCmdQry.response->mdg.dg.payLoad[0]);
+   mdCommand                *gotten = new mdCommand();
+   char                       *sVal = &flattened->sVal;
+
+   memcpy(&gotten->parms,&flattened,sizeof(mdCmdPOD));
+   gotten->signature                  = std::string(sVal);
+   mySCPI[std::string(canonicalSCPI)] = gotten;
+
+ } else 
+   value = thisCmdQry.response->mdg.dg.hdr.ec;
+
+ return value;
+
+}
+bool mdEmbeddedAPI::mdResume() {
+
+ bool   value=false;
+ return value;
+
+}
+mdOperationalDataElement *mdEmbeddedAPI::mdRegisterODE(const char *name) {
+
+ boost::unique_lock<boost::mutex>                            ODERegResponse(mdQuery);
+ mdOperationalDataElement *value = NULL, *candidate = new mdOperationalDataElement();
+ dvQueryMD                                                                    regODE;
+ int                                                                          nthODE;
+
+ if (!thisDevice->myHandle)         {mdErrors->set(1); goto done;}
+ if (!thisConfig->cdConnected)      {mdErrors->set(2); goto done;}
+
+ setStrMsg(regODE.mdg,name,MDDG_MDQUERY,MDDG_REGODE,thisConfig->deviceName.c_str());
+ regODE.mdg.dg.hdr.handle = regODE.mdg.dg.hdr.sourceHandle = thisDevice->myHandle;
+ thisODEQry.call          = &regODE;
+ regODE.send();
+ mdODEQPending.wait(ODERegResponse);
+
+ if (thisODEQry.response->mdg.dg.hdr.dgType.value) {
+
+   mdODEPOD              *flattened = (mdODEPOD *)(&thisODEQry.response->mdg.dg.payLoad[0]);
+   mdODEPOD                 *shared = &gm->opsdata[(nthODE=gm->nODEs++)];
+   gm->odes[nthODE]                 = std::string(name);
+   mdOperationalDataElement *gotten = new mdOperationalDataElement(shared);
+   char                       *sVal = &flattened->sVal;
+
+   memcpy(&gotten->ode,&flattened,sizeof(mdODEPOD));
+   gotten->stringValue              = std::string(sVal);
+   myODEs[std::string(name)]        = value = gotten;
+
+ } else 
+   mdErrors->set(thisODEQry.response->mdg.dg.hdr.ec);
+
+ done: return value;
+}
+mdObservable *mdEmbeddedAPI::mdRegisterObservable(const char *name) {
+
+ boost::unique_lock<boost::mutex>    obsRegResponse(mdQuery);
+ mdObservable *value = NULL, *candidate = new mdObservable();
+ dvQueryMD                                            regObs;
+ int                                                  nthObs;
+
+ if (!thisDevice->myHandle)         {mdErrors->set(1); goto done;}
+ if (!thisConfig->cdConnected)      {mdErrors->set(2); goto done;}
+
+ setStrMsg(regObs.mdg,name,MDDG_MDQUERY,MDDG_REGOBS,thisConfig->deviceName.c_str());
+ regObs.mdg.dg.hdr.handle   = regObs.mdg.dg.hdr.sourceHandle = thisDevice->myHandle;
+ thisObsQry.call            = &regObs;
+ regObs.send();
+ mdObsQPending.wait(obsRegResponse);
+ if (thisObsQry.response->mdg.dg.hdr.dgType.value) {
+
+   mdObsPOD     *flattened  = (mdObsPOD *)(&thisObsQry.response->mdg.dg.payLoad[0]);
+   mdObsPOD     *shared     = &gm->observations[(nthObs=gm->nObs++)];
+   gm->obs[nthObs]          = std::string(name);
+   mdObservable *gotten     = new mdObservable(shared);
+   char         *sVal       = &flattened->sVal;
+
+   memcpy(&gotten->obs,&flattened,sizeof(mdObsPOD));
+   gotten->sValue           = std::string(sVal);
+   myObs[std::string(name)] = value = gotten;
+
+ } else 
+   mdErrors->set(thisObsQry.response->mdg.dg.hdr.ec);
+
+ done: return value;
+
+}
+bool mdEmbeddedAPI::mdYield() {
+
+ bool value=true;
+ return value;
+
+}
+void mdEmbeddedAPI::setSingleton(auc_dv_global *shared)
+{
+   mdDDAPI = this; 
+  if (!mdAddress.empty()) thisConfig->mdAddress = mdAddress;
+  if (!mdPort.empty())    thisConfig->mdPort    = mdPort;   
+  cdConnected   = &thisConfig->cdConnected;   
+  log           = &theseLogs;                      
+  gm            = shared;
+  gm->nObs      = gm->nODEs   = 0;
+}
+void mdEmbedded::additionalSystemMsgs() {
+
+   mdErrors = new mdError();
+
+   mdErrors->additionalSystemMsg(1, "The device is not connected to the MD.");
+   mdErrors->additionalSystemMsg(2, "The device is not connected to the CD.");
+   mdErrors->additionalSystemMsg(10,"The data element is unknown to the MD.");
+   mdErrors->additionalSystemMsg(20,"The SCPI command is unknown to the MD.");
+
+}

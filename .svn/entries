@@ -1,0 +1,77 @@
+10
+
+dir
+22
+svn://juan.ai-integration.biz/svn/ai-integration.biz/DACLIPS/trunk
+svn://juan.ai-integration.biz/svn/ai-integration.biz
+
+
+
+2011-01-10T21:30:40.601571Z
+22
+jdaugherty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0f11a633-4532-49ad-be29-257e40156bce
+
+src
+dir
+
+bin
+dir
+
+obj
+dir
+
+misc
+dir
+
+doxygen
+dir
+
+Makefile
+file
+24
+
+
+
+2011-01-11T02:41:21.000000Z
+d42aa74260d905bfae3c9395746a32de
+2011-01-11T19:09:03.120606Z
+24
+jdaugherty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+125877
+

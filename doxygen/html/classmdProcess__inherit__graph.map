@@ -1,0 +1,9 @@
+<area shape="rect" href="$classcdClieverTransaction.html" title="cdClieverTransaction Encapsulates CD&#45;mddevice interactions." alt="" coords="155,5,296,32">
+<area shape="rect" href="$classdvTransaction.html" title="dvTransaction Encapsulates mddevice interactions." alt="" coords="175,56,276,83">
+<area shape="rect" href="$classmasterDaemon.html" title="masterDaemon" alt="" coords="171,107,280,133">
+<area shape="rect" href="$classmdCliever.html" title="mdCliever Client&#45;server middleware object." alt="" coords="185,157,265,184">
+<area shape="rect" href="$classmdClieverTransaction.html" title="mdClieverTransaction Abstract category encapsulating MD&#45;CD interactions." alt="" coords="152,208,299,235">
+<area shape="rect" href="$classmdEmbeddedTransaction.html" title="mdEmbeddedTransaction Abstract category encapsulating MD&#45;CD interactions." alt="" coords="141,259,309,285">
+<area shape="rect" href="$classmdEmbedded.html" title="mdEmbedded Client&#45;server middleware object." alt="" coords="364,56,465,83">
+<area shape="rect" href="$classmdCDHeartbeat.html" title="mdCDHeartbeat" alt="" coords="359,208,471,235">
+<area shape="rect" href="$classmdDVHeartbeat.html" title="mdDVHeartbeat" alt="" coords="359,259,471,285">

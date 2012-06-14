@@ -1,0 +1,30 @@
+/** 
+    \class EventSender
+    
+    Sender of events of type EvType. All public methods are static since there is 
+    only one instance of the sender. EventSender maintains a registry 
+    of listeners who want to receive the events it sends. 
+    
+    Usage: 
+    - No instantiation needed (actually, none is possible)
+    - Call add() and remove() to add/remove a listener to/from the
+      registry. Only listeners in the registry receive events.  If those
+      two methods are called while a send() is already in progress
+      (typically from within your Listener<EvType>::processEvent()), 
+      the registrations/removals are queued and are enacted only 
+      once all listeners have received the event. This ensures the 
+      integrity of the registry during a send().
+    - Call send() on an event to send it to all registered listeners. 
+    - Call isSending() to see whether or not EventSender<EvType> is currently
+      doing a  send() call (typically used from within your
+      Listener<EvType>::processEvent() to see whether sending another
+      event  of type EvType is safe). 
+    - Call getNumListeners() to see how many listeners are currently 
+      registered. This number does not include listeners queued for
+      registration or removal from registry.
+    - Call getMinNumIgnored() to see how many listeners have ignored the 
+      last event sent. If called during a send(), gives the current 
+      number. Regardless, this number is a minimum since listeners are 
+      not required to tell EventSender<EvType> that they are ignoring the received
+      event. 
+*/

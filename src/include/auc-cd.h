@@ -1,0 +1,101 @@
+#include <cassert>
+#include <cstdarg>
+#include <cstdlib>
+#include <iostream>
+#include <boost/thread.hpp>
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/statechart/event.hpp>
+#include <boost/statechart/state_machine.hpp>
+#include <boost/statechart/simple_state.hpp>
+#include <boost/statechart/transition.hpp>
+#include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/mapped_region.hpp>
+
+#include <msgpack.hpp>
+
+#include <Category.hh>
+#include <FileAppender.hh>
+#include <PatternLayout.hh>
+
+#include "Listener.h"
+#include "EventSender.h"
+#include "TimeStampedEvent.h"
+#include "PolymorphEvent.h"
+ 
+#include <map>
+#include <utility>
+#include <map>
+#include <string>
+#include <queue>
+
+#define  CLIEVER
+
+#include "mdcommon.h"
+
+#ifdef MD_MAND
+#include <clipsmm/clipsmm.h>
+#endif
+
+#include "cdEvents.h"
+#include "mdCommander.h"
+
+#include "mdBehavior.h"
+#include "mdObservable.h"
+#include "mdState.h"
+
+
+#define CD_EPOCH            date()  
+#define CD_GLOBAL_SIZE      4096
+#define CD_LOCK_FILE        "auc-cd.lock"                  
+#define CD_NAME             DACLIPS_APP " Cliever"
+#define CD_VERSION          "1.1"
+#define CD_REFRESH          MD_HEARTBEAT         // default milliseconds between telemetry frame updates
+#define CD_MAX_DEVICE       4                    // including ourselves
+
+
+#include "clientDaemonConfig.h"
+
+typedef std::map<std::string,mdObservable*> ObservablesOfInterest;
+typedef std::map<std::string,mdOperationalDataElement*> ODEsOfInterest;
+
+#include "cdLogger.h"  
+
+class cdDataLayer;
+class mdCliever;
+
+
+#ifdef CD_MAIN
+
+         auc_cd_global             *gm;
+         boost::asio::io_service    io_bg,io_fg;
+         cdLogger                   theseLogs;
+         clientDaemonConfig        *thisConfig;
+         mdCliever                 *thisCliever;
+
+#ifdef MD_MAND
+         DACLIPS::Environment       rules[2]; // 0: batch, 1: commander
+#endif
+
+  extern void runDataLayer();
+  extern void runCliever();
+  extern void shutdown();
+
+#else
+
+  extern auc_cd_global             *gm;
+  extern boost::asio::io_service    io_bg,io_fg;
+  extern const char                *cdOrKb;                  
+  extern cdLogger                   theseLogs;
+  extern clientDaemonConfig        *thisConfig;
+  extern mdCliever                 *thisCliever;
+
+#ifdef MD_MAND
+  extern DACLIPS::Environment      *rules[2]; 
+#endif
+
+#endif
+ 
+#include "clientDaemon.h"
+
