@@ -16,5 +16,5 @@ it's still just a sketch, albeit a huge one
 with a lot of proven code in embedded packages
 such as boost, xmlrpc/c, and of course CLIPS.
 
-Will say more in the commit logs as I revive this.
+Largely static at this commit.
 
