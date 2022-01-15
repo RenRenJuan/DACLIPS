@@ -11,7 +11,7 @@ project (CacheManager).
 
 Basically it's a low level Data Acquistion system
 married to CLIPS. Some wide swathes of it are
-tested and worked out fundtionality but ATM
+tested and worked out functionality but ATM
 it's still just a sketch, albeit a huge one
 with a lot of proven code in embedded packages
 such as boost, xmlrpc/c, and of course CLIPS.
