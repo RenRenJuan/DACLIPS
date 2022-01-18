@@ -3,7 +3,7 @@ DACLIPS
 
 A much better C++ code set to pick up and work with. 
 
-While I abhor lang ghettos, C++ i the modern lang of
+While I abhor lang ghettos, C++ is the modern lang of
 choice for to the metal efficiency and this code
 set has many characteristics I wish to continue
 and it's also much further along than the grudge
